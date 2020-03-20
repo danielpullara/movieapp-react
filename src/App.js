@@ -13,17 +13,25 @@ let movieList= [];
 function App() {
 
   let [movies, setMovies] = useState(null);
-  let CurrentPlaying = async () => {
+  let currentPlaying = async () => {
     let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=1`
     let data = await fetch(url);
     let result = await data.json();
     console.log("apiKey", apiKey);
     console.log("Data we get", result);
-    movieList= result.results;
+    // movieList= result.results;
     setMovies(result.results);
+
+    let secondUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=4f563ed138e42117eec2de0ac4301aed&language=en-US`
+    let secondData = await fetch(secondUrl);
+    let secondResult = await secondData.json();
+    console.log("Data we get", secondResult)
+    movieList= secondResult.genres;
+    
+    
   }
 
-  useEffect(CurrentPlaying, []);
+  useEffect(currentPlaying, []);
   if (movies == null) {
     return (
       <div>
@@ -45,6 +53,8 @@ function App() {
     let sortedMovie = [...movies].sort((a, b) => b.popularity - a.popularity);
     setMovies(sortedMovie);
   };
+  
+
   return (
     <div>
       <Navbar bg="light" expand="lg">
@@ -75,3 +85,4 @@ function App() {
 }
 
 export default App;
+
