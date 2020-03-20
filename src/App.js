@@ -41,6 +41,10 @@ function App() {
     console.log ("")
   
   }
+  let sortByPopularity = () => {
+    let sortedMovie = [...movies].sort((a, b) => b.popularity - a.popularity);
+    setMovies(sortedMovie);
+  };
   return (
     <div>
       <Navbar bg="light" expand="lg">
@@ -62,7 +66,7 @@ function App() {
             <FormControl type="text" placeholder="Search" className="mr-sm-2" onChange={(e)=> {searchByKeyword(e)}} />
             <Button onClick={()=>searchByKeyword()} variant="outline-success">Search</Button>
           </Form>
-          <Button onClick={()=>searchByKeyword()} variant="outline-success">Most Popular</Button>
+          <Button onClick={()=>sortByPopularity ()} variant="outline-success">Most Popular</Button>
         </Navbar.Collapse>
       </Navbar>
       <Movie movieList={movies} />
