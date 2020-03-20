@@ -13,25 +13,58 @@ let movieList= [];
 function App() {
 
   let [movies, setMovies] = useState(null);
+  const [genres, setGenres] = useState([]);
+
+
   let currentPlaying = async () => {
     let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=1`
     let data = await fetch(url);
     let result = await data.json();
-    console.log("apiKey", apiKey);
-    console.log("Data we get", result);
-    // movieList= result.results;
-    setMovies(result.results);
+    
 
-    let secondUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=4f563ed138e42117eec2de0ac4301aed&language=en-US`
-    let secondData = await fetch(secondUrl);
-    let secondResult = await secondData.json();
-    console.log("Data we get", secondResult)
-    movieList= secondResult.genres;
-    
-    
+    movieList= result.results;
+    // manipulate the movies (merge genreID with genre Name) before setState 
+
+    // this following code is to iterate over the movies list and then for each movie, we will iterate over the genre_ids array and find the corresponding genre name
+    // JS will try to run 1 ms for each line of code
+
+    movieList.map(movie => { 
+      movie.genres = movie.genre_ids.map(genre => genres.find(el=>el.id === genre))
+    })
+
+    setMovies(movieList);
+    // it would slow down alot because if you fetch another page (e.g page 2) you will fetch the genre list again.
+
   }
 
-  useEffect(currentPlaying, []);
+  const fetchGenres = async () => {
+    let secondUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`
+    let secondData = await fetch(secondUrl);
+    let secondResult = await secondData.json();
+    setGenres(secondResult.genres) // will change genres value
+  }
+
+
+  useEffect(()=> {
+    fetchGenres(); 
+  }, []); // run once after mounted , mounted is different from re-rendered
+
+  // componentDidUpdate(previous, current){
+  //   if(previous.genres !== current.genres) {
+  //     currentPlaying();
+  //   }
+  // }
+
+  useEffect(()=> {
+    currentPlaying();
+    // my problem right now is that setGenres hasn't finished running, that's why genres list empty
+  }, [genres]); // put genres inside the array here meaning: hey, if genres is changed, then execute the  currentPlaying();
+  
+  
+  console.log(movies)
+
+
+
   if (movies == null) {
     return (
       <div>
@@ -54,7 +87,9 @@ function App() {
     setMovies(sortedMovie);
   };
   
-
+// 2 options: 
+// 1: WHen you render the genreID, you use a function to return the corresponding name for that ID : it's slow (run slow)
+// 2: Manipulate the array movies first (right after you fetch from API). (it's faster, much faster) movies = [{title:"dsadasdas", genres:[{id:28, name:"Action"},{},{}]}, {},{}]
   return (
     <div>
       <Navbar bg="light" expand="lg">
@@ -79,7 +114,7 @@ function App() {
           <Button onClick={()=>sortByPopularity ()} variant="outline-success">Most Popular</Button>
         </Navbar.Collapse>
       </Navbar>
-      <Movie movieList={movies} />
+      <Movie movieList={movies}  genres = {genres} />
     </div>
   );
 }
