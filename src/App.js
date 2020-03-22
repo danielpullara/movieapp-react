@@ -105,7 +105,7 @@ function App() {
     )
   }
   let searchByKeyword = (e) => {
-    keyword = e.target.value;
+    keyword =e.target.value;
     if (keyword === '') {
       setMovies(movieList)
     } else {
@@ -167,8 +167,8 @@ function App() {
         <Container>
           <h1 class="TextColor">Unlimited movies, TV shows, and more.</h1>
           <Row>
-            <FormControl fluid type="text" placeholder="Search" className="mr-sm-2 col-md-6" onChange={(e) => { searchByKeyword(e) }} />
-            <Button onClick={() => searchByKeyword()} className="mr-sm-2 col-md-2" variant="danger">Search</Button>
+            <FormControl fluid type="text" placeholder="Search" className="mr-sm-2 col-md-6" onChange={(e) => searchByKeyword(e)} />
+            <Button onClick={(e) => searchByKeyword(e)} className="mr-sm-2 col-md-2" variant="danger">Search</Button>
           </Row>
         </Container>
       </Jumbotron>
