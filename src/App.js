@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import './App.css';
+import { Navbar, NavDropdown, Form, Nav, } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, NavDropdown, Form, Nav, FormControl, Button } from 'react-bootstrap'
+import { FormControl, Button, } from 'react-bootstrap'
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import bgimage from './background.jpg'
 import Movie from './components/Movie'
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
+import logo from './netflix.png'
+import { ButtonGroup } from 'react-bootstrap'
+
 
 let apiKey = process.env.REACT_APP_APIKEY;
 let keyword = ``
@@ -46,9 +51,18 @@ function App() {
     currentPlaying();
   };
 
+  let goBack = (page) => {
+    if (page === 1) {
+      goBack=false;
+    } else {
+      page = page - 1;
+      currentPlaying();
+    }
+  };
 
   console.log("Movie List with Genre & ID", movieList);
-  //Filter Movies by Genre
+
+  // Filter Movies by Genre
   let filteredMovies = (g) => {
     let genreId = g;
     if (genreId === null) {
@@ -122,12 +136,12 @@ function App() {
   // 1: WHen you render the genreID, you use a function to return the corresponding name for that ID : it's slow (run slow)
   // 2: Manipulate the array movies first (right after you fetch from API). (it's faster, much faster) movies = [{title:"dsadasdas", genres:[{id:28, name:"Action"},{},{}]}, {},{}]
   return (
-    <div>
-      <Navbar sticky="top" bg="dark" expand="lg">
-        <Navbar.Brand href="">React-Bootstrap</Navbar.Brand>
+    <div id="main" >
+      <Navbar sticky="top" variant="dark" bg="dark" >
+        <Navbar.Brand><img src={logo} width="90px" ></img></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">           
+          <Nav className="mr-auto">
             <NavDropdown title="Genres" id="basic-nav-dropdown">
               <NavDropdown.Item onClick={() => filteredMovies(12)} href="#action/3.2">Adventure</NavDropdown.Item>
               <NavDropdown.Item onClick={() => filteredMovies(35)} href="#action/3.1">Comedy</NavDropdown.Item>
@@ -142,24 +156,32 @@ function App() {
               <NavDropdown.Item onClick={() => filteredMovies(53)} href="#action/3.2">Thriller</NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form inline>          
+          <Form inline>
           </Form>
-          <Button onClick={() => sortByPopularity()} variant="outline-success">Most Popular</Button>
-          <Button onClick={() => sortByLeastPopularity()} variant="outline-success">Least Popular</Button>
-          <Button onClick={() => sortByHighestRating()} variant="outline-success">Top Rated</Button>
-          <Button onClick={() => loadMore()} variant="outline-success">See More</Button>
+          <Button style={{ marginRight: '10px' }} onClick={() => sortByPopularity()} variant="secondary" >Most Popular</Button>
+          <Button style={{ marginRight: '10px' }} onClick={() => sortByLeastPopularity()} variant="secondary">Least Popular</Button>
+          <Button style={{ marginRight: '10px' }} onClick={() => sortByHighestRating()} variant="secondary" >Top Rated</Button>
         </Navbar.Collapse>
       </Navbar>
       <Jumbotron style={{ backgroundImage: `url(${bgimage})`, backgroundSize: 'cover' }}>
         <Container>
           <h1 class="TextColor">Unlimited movies, TV shows, and more.</h1>
           <Row>
-          <FormControl fluid type="text" placeholder="Search" className="mr-sm-2 col-md-6"  onChange={(e) => { searchByKeyword(e) }}/>
-          <Button onClick={() => searchByKeyword()} className="mr-sm-2 col-md-2" variant="danger">Search</Button>         
-          </Row>         
+            <FormControl fluid type="text" placeholder="Search" className="mr-sm-2 col-md-6" onChange={(e) => { searchByKeyword(e) }} />
+            <Button onClick={() => searchByKeyword()} className="mr-sm-2 col-md-2" variant="danger">Search</Button>
+          </Row>
         </Container>
       </Jumbotron>
       <Movie movieList={movies} genres={genres} />
+      <footer>
+        <ButtonToolbar style={{ justifyContent: 'center', alignItems: 'center' }} aria-label="Toolbar with button groups">
+          <Button style={{ marginRight: '10px' }} onClick={() => goBack()} variant="secondary">Go Back</Button>
+          <ButtonGroup className="mr-2" aria-label="First group">
+            <Button variant="secondary">1</Button> <Button variant="secondary">2</Button> <Button variant="secondary">3</Button> <Button variant="secondary" >4</Button>            
+          </ButtonGroup>
+          <Button style={{ marginLeft: '2px' }} onClick={() => loadMore()} variant="secondary">View More</Button>
+        </ButtonToolbar>
+      </footer>
     </div>
   );
 }

@@ -40,3 +40,11 @@
 .TextColor {
   color: white;
 }
+
+#main {
+  background-color: white;
+}
+
+#transparant {
+  background-color:transparent;
+}
