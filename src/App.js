@@ -26,7 +26,7 @@ function App() {
 
 
   let currentPlaying = async () => {
-    let url = `http://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=${page}`
+    let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=${page}`
     let data = await fetch(url);
     let result = await data.json();
 
@@ -74,7 +74,7 @@ function App() {
 
 
   const fetchGenres = async () => {
-    let secondUrl = `http://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`
+    let secondUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en-US`
     let secondData = await fetch(secondUrl);
     let secondResult = await secondData.json();
     setGenres(secondResult.genres) // will change genres value
