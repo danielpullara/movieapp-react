@@ -10,7 +10,6 @@ import bgimage from './background.jpg'
 import Movie from './components/Movie'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import logo from './netflix.png'
-import { ButtonGroup } from 'react-bootstrap'
 
 
 let apiKey = process.env.REACT_APP_APIKEY;
@@ -48,16 +47,17 @@ function App() {
 
   let loadMore = () => {
     page = 1 + page;
-    currentPlaying();
+    currentPlaying(); 
   };
+  console.log("page number",page)
 
-  let goBack = (page) => {
-    if (page === 1) {
-      goBack=false;
-    } else {
-      page = page - 1;
-      currentPlaying();
-    }
+  let goBack = () => {
+    if (page === 1){
+    page = 1;
+  }else{
+    page = page - 1;
+    currentPlaying();  
+  }
   };
 
   console.log("Movie List with Genre & ID", movieList);
@@ -176,9 +176,9 @@ function App() {
       <footer>
         <ButtonToolbar style={{ justifyContent: 'center', alignItems: 'center' }} aria-label="Toolbar with button groups">
           <Button style={{ marginRight: '10px' }} onClick={() => goBack()} variant="secondary">Go Back</Button>
-          <ButtonGroup className="mr-2" aria-label="First group">
+          {/* <ButtonGroup className="mr-2" aria-label="First group">
             <Button variant="secondary">1</Button> <Button variant="secondary">2</Button> <Button variant="secondary">3</Button> <Button variant="secondary" >4</Button>            
-          </ButtonGroup>
+          </ButtonGroup> */}
           <Button style={{ marginLeft: '2px' }} onClick={() => loadMore()} variant="secondary">View More</Button>
         </ButtonToolbar>
       </footer>
