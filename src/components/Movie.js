@@ -31,7 +31,7 @@ export default function Movie(props) {
 
                     </ListGroup>
                     <Card.Body>
-                        <Card.Link style={{ color: 'blue' }} href="#">Watch Trailor</Card.Link>
+                        <Card.Link onClick={(e) => props.onShowTrailer(e,movie.id)} style={{ color: 'blue' }} href="#">Watch Trailor</Card.Link>
                         <Card.Link style={{ color: 'blue' }} href="#">View More</Card.Link>
                     </Card.Body>
                 </Card>
