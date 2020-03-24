@@ -8,9 +8,12 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import bgimage from './background.jpg'
 import Movie from './components/Movie'
+import Slider from './components/Slider'
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import logo from './netflix.png'
-
+import ReactModal from 'react-modal';
+import YouTube from '@u-wave/react-youtube';
+import Pagination from "react-js-pagination";
 
 let apiKey = process.env.REACT_APP_APIKEY;
 let keyword = ``
@@ -22,13 +25,15 @@ function App() {
 
   let [movies, setMovies] = useState(null);
   let [genres, setGenres] = useState([]);
-
+  let [modal, setModal] = useState(false)
+  let [trailer, setTrailer] = useState('')
+  // let [pageNumber, setPageNumber] = useState(1)
 
   let currentPlaying = async () => {
     let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=${page}`
     let data = await fetch(url);
     let result = await data.json();
-
+    console.log('currentplaying run')
 
     movieList = result.results;
     // manipulate the movies (merge genreID with genre Name) before setState 
@@ -47,17 +52,17 @@ function App() {
 
   let loadMore = () => {
     page = 1 + page;
-    currentPlaying(); 
+    currentPlaying();
   };
-  console.log("page number",page)
+  console.log("page number", page)
 
   let goBack = () => {
-    if (page === 1){
-    page = 1;
-  }else{
-    page = page - 1;
-    currentPlaying();  
-  }
+    if (page === 1) {
+      page = 1;
+    } else {
+      page = page - 1;
+      currentPlaying();
+    }
   };
 
   console.log("Movie List with Genre & ID", movieList);
@@ -105,7 +110,7 @@ function App() {
     )
   }
   let searchByKeyword = (e) => {
-    keyword =e.target.value;
+    keyword = e.target.value;
     if (keyword === '') {
       setMovies(movieList)
     } else {
@@ -128,6 +133,37 @@ function App() {
     let sortedHighestRating = [...movies].sort((a, b) => b.vote_average - a.vote_average);
     setMovies(sortedHighestRating);
   };
+
+
+  let onShowTrailer = async (e, movieId) => {
+    e.preventDefault()
+    console.log('movieId:', movieId)
+    let url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`
+    let data = await fetch(url)
+    let respones = await data.json()
+    console.log(respones.results)
+    setModal(true)
+    if (respones.results.length > 0) {
+      setTrailer(respones.results[0].key)
+    }
+  }
+
+  let onFilterRating = (inputValue) => {
+    console.log(inputValue)
+    setMovies(movieList.filter(movie => movie.vote_average >= inputValue.min && movie.vote_average <= inputValue.max))
+  }
+
+  // let handlePageChange = async (pageNumber) => {
+  //   console.log('pageNum:', pageNumber)
+  //   setPageNumber(pageNumber)
+  //   let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=${pageNumber}`
+  //   let data = await fetch(url);
+  //   let result = await data.json();
+  //   console.log('currentplaying run')
+
+  //   setMovies(result.results);
+
+  // }
 
 
 
@@ -172,7 +208,21 @@ function App() {
           </Row>
         </Container>
       </Jumbotron>
-      <Movie movieList={movies} genres={genres} />
+      <div className="d-flex justify-content-center">
+        <Slider onFilterRating={onFilterRating} />
+      </div>
+      <Movie movieList={movies} genres={genres} onShowTrailer={onShowTrailer} />
+      <ReactModal
+        isOpen={modal}
+        onRequestClose={() => setModal(false)}
+        style={{ overlay: { display: "flex", justifyContent: "center" }, content: { width: "70%", height: "70%", position: "relative" } }}
+      >
+        <YouTube className="w-100 h-100"
+          video={trailer}
+          autoplay
+        />
+      </ReactModal>
+
       <footer>
         <ButtonToolbar style={{ justifyContent: 'center', alignItems: 'center' }} aria-label="Toolbar with button groups">
           <Button style={{ marginRight: '10px' }} onClick={() => goBack()} variant="secondary">Go Back</Button>
@@ -181,6 +231,17 @@ function App() {
           </ButtonGroup> */}
           <Button style={{ marginLeft: '2px' }} onClick={() => loadMore()} variant="secondary">View More</Button>
         </ButtonToolbar>
+        {/* <div>
+          <Pagination
+            activePage={pageNumber}
+            itemClass="page-item"
+            linkClass="page-link"
+            itemsCountPerPage={20}
+            totalItemsCount={450}
+            pageRangeDisplayed={5}
+            onChange={handlePageChange}
+          />
+        </div> */}
       </footer>
     </div>
   );
