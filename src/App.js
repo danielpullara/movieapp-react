@@ -13,7 +13,7 @@ import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
 import logo from './netflix.png'
 import ReactModal from 'react-modal';
 import YouTube from '@u-wave/react-youtube';
-import Pagination from "react-js-pagination";
+// import Pagination from "react-js-pagination";
 
 let apiKey = process.env.REACT_APP_APIKEY;
 let keyword = ``
